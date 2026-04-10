@@ -54,8 +54,7 @@ def spotify_callback():
     response = exchange_code(spotify, code)
     spotify.access_token = response["access_token"]
     spotify.refresh_token = response["refresh_token"]
-    username = session.get('username')
-    save_tokens(f"{username}_spotify", response)
+    save_tokens(f"_spotify", response)
     spotify.headers = generate_headers(spotify)
     return "Spotify auth complete. Bitch."
 
