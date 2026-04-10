@@ -38,7 +38,7 @@ def twitch_callback():
     twitch.refresh_token = response["refresh_token"]
     twitch.channel_name = authenticated_user(twitch.access_token, twitch.client_id)
     session['username'] = twitch.channel_name
-    save_tokens(twitch.channel_name, response)
+    save_tokens(f"{twitch.channel_name}_twitch", response)
     twitch.headers = generate_headers(twitch)
     return "Twitch auth complete. Bitch."
 
