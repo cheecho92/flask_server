@@ -12,3 +12,4 @@ twitch_token.json
 spotify_token.json
 test.py
 json*
+configs.py
