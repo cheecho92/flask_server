@@ -40,7 +40,7 @@ def twitch_callback():
     session['username'] = twitch.channel_name
     save_tokens(f"{twitch.channel_name}_twitch", response)
     twitch.headers = generate_headers(twitch)
-    return "Twitch auth complete. Bitch."
+    return "Twitch auth complete."
 
 
 @app.route('/spotify/callback')
@@ -56,7 +56,7 @@ def spotify_callback():
     spotify.refresh_token = response["refresh_token"]
     save_tokens(f"_spotify", response)
     spotify.headers = generate_headers(spotify)
-    return "Spotify auth complete. Bitch."
+    return "Spotify auth complete."
 
 
 @app.route('/overlay/<streamer>')
