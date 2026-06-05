@@ -1,27 +1,41 @@
-This is going to be a quick and dirty README for now.
+# flask_server
 
-This is a twitch chat moderation bot for twitch.tv based off of my cat.
+OAuth authentication server for the Winston Twitch bot. When a user needs to authorize Winston to act on their behalf, they visit this server, get redirected through the Twitch or Spotify consent flow, and the server handles the callback exchanging the auth code for access/refresh tokens and saving them to an accessible directory so the bot can use them without requiring the end-user to reauth.
 
-This repo contains a flask server to handle incoming authorization requests for the bot. This operates on a cloudflare tunnel that connects to a raspberry pi running the services.
+This is a supporting service for Winston_Bot. Its sole job is to make authenticated API access possible for chat moderation and Spotify song queue requests.
 
-# Classes 
-
-*Config* - a dataclass to hold information for authentication
-
-*RedirectHandler* - info to handle internal GET call on temp HTTP server
+The server runs on a Raspberry Pi and is exposed via a Cloudflare tunnel so that OAuth providers can reach the callback endpoints.
 
 
-# Authentication
+## Setup
 
-oAuth is handled by auth.py. It uses the dataclass data to create the oAuth link, and stands up a temp local HTTP server to handle the redirect URL and retrieve the code needed for the final POST call. Finally, the handle_tokens function is called. This will check to see if an existing json file with token information is available. If it is not, it will proceed with the POST to the twitch token uri, and use the response to generate the token. 
+### Prerequisites
 
-I included the api_call function here. This functions purpose is to wrap any method with error handling for any 401 responses. If a 401 is generated, the function will call handle_tokens and use the refresh code to update the token json.
+- Python 3.10+
+- [`winston_shared`](https://github.com/cheecho92/winston_shared) installed (provides auth utilities and token storage)
+- Twitch and Spotify apps registered with redirect URIs pointing to your Cloudflare tunnel domain
+- A Cloudflare tunnel pointed at your respective server/port (Server listens on `127.0.0.1:3000` by default.)
+
+### Install
+
+```bash
+pip install -r requirements.txt
+```
+
+Make sure `winston_shared` is installed
+
+```bash
+pip install -e /path/to/winston_shared
+```
+
+### Config
+
+Copy `config_template.py` to `config.py` and fill in your credentials as needed.
+
+Run with app.py
 
 
-# Method Files
+## Related
 
-There are two method files. twitch_calls.py and spotify_calls.py. These contain all functions needed to handle any twitch and spotify API interaction.
-
-# Websocket connection
-
-websocket_monitor.py contains the build of the logic for this bot. It connections to twitchs event subscriptions using pythons websocket library. After listen_twitch is called the websocket connection is formed with async for a consistent monitor. The payload is extracted from events, parsed for data needed, and fed to the connections logic. 
+- [`Winston_Bot`](https://github.com/cheecho92/Winston_Bot) — the bot that handles the tokens generated and contains the chat moderation logic
+- [`winston_shared`](https://github.com/cheecho92/winston_shared) — shared auth logic and tokens used by both services
